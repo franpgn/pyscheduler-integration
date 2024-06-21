@@ -1,0 +1,88 @@
+
+Função Original Simplificada
+Função com objetivo de comparar se duas palavras (Strings) são anagramas umas das outras
+def VTS(palavra1, palavra2):
+    # Inicializa dois dicionários para contar a frequência de cada letra
+    contagem1 = {}
+    contagem2 = {}
+    
+    # Conta a frequência de cada letra na primeira palavra
+    for letra in palavra1:
+        if letra in contagem1:
+            contagem1[letra] += 1
+        else:
+            contagem1[letra] = 1
+    
+    # Conta a frequência de cada letra na segunda palavra
+    for letra in palavra2:
+        if letra in contagem2:
+            contagem2[letra] += 1
+        else:
+            contagem2[letra] = 1
+    
+    # Compara os dois dicionários de frequência
+    return contagem1 == contagem2
+
+tradução para bytecode:
+[Instruction(opname='BUILD_MAP', opcode=105, arg=0, argval=0, argrepr='', offset=0, starts_line=4, is_jump_target=False),
+ Instruction(opname='STORE_FAST', opcode=125, arg=2, argval='contagem1', argrepr='contagem1', offset=2, starts_line=None, is_jump_target=False),
+ Instruction(opname='BUILD_MAP', opcode=105, arg=0, argval=0, argrepr='', offset=4, starts_line=5, is_jump_target=False),
+ Instruction(opname='STORE_FAST', opcode=125, arg=3, argval='contagem2', argrepr='contagem2', offset=6, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=0, argval='palavra1', argrepr='palavra1', offset=8, starts_line=8, is_jump_target=False),
+ Instruction(opname='GET_ITER', opcode=68, arg=None, argval=None, argrepr='', offset=10, starts_line=None, is_jump_target=False),
+ Instruction(opname='FOR_ITER', opcode=93, arg=19, argval=52, argrepr='to 52', offset=12, starts_line=None, is_jump_target=True),
+ Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='letra', argrepr='letra', offset=14, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=16, starts_line=9, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='contagem1', argrepr='contagem1', offset=18, starts_line=None, is_jump_target=False),
+ Instruction(opname='CONTAINS_OP', opcode=118, arg=0, argval=0, argrepr='', offset=20, starts_line=None, is_jump_target=False),
+ Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=21, argval=42, argrepr='to 42', offset=22, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='contagem1', argrepr='contagem1', offset=24, starts_line=10, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=26, starts_line=None, is_jump_target=False),
+ Instruction(opname='DUP_TOP_TWO', opcode=5, arg=None, argval=None, argrepr='', offset=28, starts_line=None, is_jump_target=False),
+ Instruction(opname='BINARY_SUBSCR', opcode=25, arg=None, argval=None, argrepr='', offset=30, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval=1, argrepr='1', offset=32, starts_line=None, is_jump_target=False),
+ Instruction(opname='INPLACE_ADD', opcode=55, arg=None, argval=None, argrepr='', offset=34, starts_line=None, is_jump_target=False),
+ Instruction(opname='ROT_THREE', opcode=3, arg=None, argval=None, argrepr='', offset=36, starts_line=None, is_jump_target=False),
+ Instruction(opname='STORE_SUBSCR', opcode=60, arg=None, argval=None, argrepr='', offset=38, starts_line=None, is_jump_target=False),
+ Instruction(opname='JUMP_ABSOLUTE', opcode=113, arg=6, argval=12, argrepr='to 12', offset=40, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval=1, argrepr='1', offset=42, starts_line=12, is_jump_target=True),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='contagem1', argrepr='contagem1', offset=44, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=46, starts_line=None, is_jump_target=False),
+ Instruction(opname='STORE_SUBSCR', opcode=60, arg=None, argval=None, argrepr='', offset=48, starts_line=None, is_jump_target=False),
+ Instruction(opname='JUMP_ABSOLUTE', opcode=113, arg=6, argval=12, argrepr='to 12', offset=50, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=1, argval='palavra2', argrepr='palavra2', offset=52, starts_line=15, is_jump_target=True),
+ Instruction(opname='GET_ITER', opcode=68, arg=None, argval=None, argrepr='', offset=54, starts_line=None, is_jump_target=False),
+ Instruction(opname='FOR_ITER', opcode=93, arg=19, argval=96, argrepr='to 96', offset=56, starts_line=None, is_jump_target=True),
+ Instruction(opname='STORE_FAST', opcode=125, arg=4, argval='letra', argrepr='letra', offset=58, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=60, starts_line=16, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='contagem2', argrepr='contagem2', offset=62, starts_line=None, is_jump_target=False),
+ Instruction(opname='CONTAINS_OP', opcode=118, arg=0, argval=0, argrepr='', offset=64, starts_line=None, is_jump_target=False),
+ Instruction(opname='POP_JUMP_IF_FALSE', opcode=114, arg=43, argval=86, argrepr='to 86', offset=66, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='contagem2', argrepr='contagem2', offset=68, starts_line=17, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=70, starts_line=None, is_jump_target=False),
+ Instruction(opname='DUP_TOP_TWO', opcode=5, arg=None, argval=None, argrepr='', offset=72, starts_line=None, is_jump_target=False),
+ Instruction(opname='BINARY_SUBSCR', opcode=25, arg=None, argval=None, argrepr='', offset=74, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval=1, argrepr='1', offset=76, starts_line=None, is_jump_target=False),
+ Instruction(opname='INPLACE_ADD', opcode=55, arg=None, argval=None, argrepr='', offset=78, starts_line=None, is_jump_target=False),
+ Instruction(opname='ROT_THREE', opcode=3, arg=None, argval=None, argrepr='', offset=80, starts_line=None, is_jump_target=False),
+ Instruction(opname='STORE_SUBSCR', opcode=60, arg=None, argval=None, argrepr='', offset=82, starts_line=None, is_jump_target=False),
+ Instruction(opname='JUMP_ABSOLUTE', opcode=113, arg=28, argval=56, argrepr='to 56', offset=84, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_CONST', opcode=100, arg=1, argval=1, argrepr='1', offset=86, starts_line=19, is_jump_target=True),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='contagem2', argrepr='contagem2', offset=88, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=4, argval='letra', argrepr='letra', offset=90, starts_line=None, is_jump_target=False),
+ Instruction(opname='STORE_SUBSCR', opcode=60, arg=None, argval=None, argrepr='', offset=92, starts_line=None, is_jump_target=False),
+ Instruction(opname='JUMP_ABSOLUTE', opcode=113, arg=28, argval=56, argrepr='to 56', offset=94, starts_line=None, is_jump_target=False),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=2, argval='contagem1', argrepr='contagem1', offset=96, starts_line=22, is_jump_target=True),
+ Instruction(opname='LOAD_FAST', opcode=124, arg=3, argval='contagem2', argrepr='contagem2', offset=98, starts_line=None, is_jump_target=False),
+ Instruction(opname='COMPARE_OP', opcode=107, arg=2, argval='==', argrepr='==', offset=100, starts_line=None, is_jump_target=False),
+ Instruction(opname='RETURN_VALUE', opcode=83, arg=None, argval=None, argrepr='', offset=102, starts_line=None, is_jump_target=False)]
+
+Instruções faltando no simulador do renato:
+BUILD_MAP (opcode 105)( é uma instrução em bytecode Python que constrói um dicionário. )
+DUP_TOP_TWO (opcode 5)(Duplica os dois elementos superiores da pilha. Útil para operações que precisam do mesmo valor em diferentes contextos.)
+BINARY_SUBSCR (opcode 25)(realiza a operação de obtenção de um item de um contêiner (como uma lista, tupla ou dicionário) usando um índice.)
+INPLACE_ADD (opcode 55)(retira os dois elementos superiores da pilha de operandos, realiza a operação de adição (+) entre eles e coloca o resultado de volta na pilha.)
+ROT_THREE (opcode 3)( troca a posição dos três elementos mais altos da pilha. Se os elementos estiverem na ordem a, b, c, após ROT_THREE, eles estarão na ordem c, a, b.)
+STORE_SUBSCR (opcode 60)(espera três valores na pilha de operandos: o contêiner (como uma lista), o índice e o valor a ser armazenado. Ele então retira esses três valores da pilha, armazena o valor no contêiner na posição especificada pelo índice e coloca o contêiner modificado de volta na pilha.)
+JUMP_ABSOLUTE (opcode 113)(Salta para a instrução especificada)
+(outras versões do código foram testadas, mas acabaram gerando mais faltas de instruções)
