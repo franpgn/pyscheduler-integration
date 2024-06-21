@@ -1,21 +1,21 @@
-import dis
+from disassemble import disassemble
 
 def bubble_sort(arr):
     n = len(arr)
-    # Percorre todos os elementos do array
+    # Traverse through all array elements
     for i in range(n):
-        # Últimos i elementos já estão no lugar correto
+        # Last i elements are already in place
         for j in range(0, n-i-1):
-            # Troca se o elemento encontrado for maior do que o próximo
+            # Swap if the element found is greater than the next element
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
 
-# Exemplo de uso
+# Test
 arr = [64, 34, 25, 12, 17, 20, 1, 2, 39, 59, 23]
 bubble_sort(arr)
 print("Array ordenado:", arr)
 
-# Descompilando a função bubble_sort para mostrar os bytecodes
+#Taking the bytecode
 print("\nInstruções bytecode da função bubble_sort:")
-dis.dis(bubble_sort)
+disassemble(bubble_sort)
 
