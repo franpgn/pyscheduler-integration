@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.ndimage import convolve
-import dis
+import matplotlib.pyplot as plt
+from disassemble import disassemble
 
 def sobel_filter(image):
     Kx = np.array([[-1, 0, 1],
@@ -18,5 +19,28 @@ def sobel_filter(image):
     G = G / G.max() * 255
     return G
 
+disassemble(sobel_filter)
 
-print(list(dis.get_instructions(sobel_filter)))
+# Test
+image = np.array([[10, 10, 10, 10, 10],
+                  [10, 50, 50, 50, 10],
+                  [10, 50, 100, 50, 10],
+                  [10, 50, 50, 50, 10],
+                  [10, 10, 10, 10, 10]])
+filtered_image = sobel_filter(image)
+
+# View
+plt.figure(figsize=(10, 5))
+
+plt.subplot(1, 2, 1)
+plt.title('Original')
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+
+plt.subplot(1, 2, 2)
+plt.title('Sobel Filter')
+plt.imshow(filtered_image, cmap='gray')
+plt.axis('off')
+
+plt.show()
+

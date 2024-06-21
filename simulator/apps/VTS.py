@@ -1,24 +1,29 @@
-import dis
-def VTS1(palavra1, palavra2):
-    # Inicializa dois dicionários para contar a frequência de cada letra
-    contagem1 = {}
-    contagem2 = {}
-    
-    # Conta a frequência de cada letra na primeira palavra
-    for letra in palavra1:
-        if letra in contagem1:
-            contagem1[letra] += 1
-        else:
-            contagem1[letra] = 1
-    
-    # Conta a frequência de cada letra na segunda palavra
-    for letra in palavra2:
-        if letra in contagem2:
-            contagem2[letra] += 1
-        else:
-            contagem2[letra] = 1
-    
-    # Compara os dois dicionários de frequência
-    return contagem1 == contagem2
+from disassemble import disassemble
 
-print(list(dis.get_instructions(VTS1)))
+def VTS1(word1, word2):
+    # Initialize two dictionaries to count the frequency of each letter
+    count1 = {}
+    count2 = {}
+
+    # Count the frequency of each letter in the first word
+    for letter in word1:
+        if letter in count1:
+            count1[letter] += 1
+        else:
+            count1[letter] = 1
+
+    # Count the frequency of each letter in the second word
+    for letter in word2:
+        if letter in count2:
+            count2[letter] += 1
+        else:
+            count2[letter] = 1
+
+    # Compare the two frequency dictionaries
+    return count1 == count2
+
+disassemble(VTS1)
+
+#Test
+print(VTS1(amor, roma)) #Return True
+print(VTS1(amor, rato)) #Return False
