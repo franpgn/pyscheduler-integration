@@ -1,9 +1,10 @@
-import unittest
 import sys
 import os
+import unittest
 
-# Adiciona o diretório raiz do projeto ao caminho de importação
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../")))
+# Adiciona o diretório do projeto ao sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+sys.path.append(project_root)
 
 from simulator.apps.BubbleSort import bubble_sort
 
