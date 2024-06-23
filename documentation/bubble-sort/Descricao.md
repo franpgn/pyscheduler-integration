@@ -9,4 +9,4 @@ Ao executar o código em conjunto com o disassembler, foi possível identificar 
 
 Para visualizar melhor como essas instruções são implementadas, aqui está uma representação visual do funcionamento do Bubble Sort:
 
-![Bubble Sort](Simulator\Test-classes\Bubble Sort\Bubble Sort Fluxograma.png)
+![Bubble Sort](https://github.com/franpgn/pyscheduler-integration/blob/main/documentation/bubble-sort/Bubble%20Sort%20Fluxograma.png?raw=true)

@@ -1,4 +1,4 @@
-from disassemble import disassemble
+#from disassemble import disassemble
 
 def bubble_sort(arr):
     n = len(arr)
@@ -17,5 +17,4 @@ print("Array ordenado:", arr)
 
 #Taking the bytecode
 print("\nInstruções bytecode da função bubble_sort:")
-disassemble(bubble_sort)
-
+#disassemble(bubble_sort)
