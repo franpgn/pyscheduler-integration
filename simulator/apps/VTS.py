@@ -25,5 +25,5 @@ def VTS1(word1, word2):
 disassemble(VTS1)
 
 #Test
-print(VTS1(amor, roma)) #Return True
-print(VTS1(amor, rato)) #Return False
+print(VTS1('amor', 'roma')) #Return True
+print(VTS1('amor', 'rato')) #Return False
