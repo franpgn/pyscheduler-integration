@@ -1,0 +1,3 @@
+[submodule "pyscheduler"]
+	path = pyscheduler
+	url = https://pyscheduler-admin@bitbucket.org/pyscheduler/pyscheduler.git
