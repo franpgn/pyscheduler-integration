@@ -9,13 +9,12 @@ def bubble_sort(arr):
             # Swap if the element found is greater than the next element
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
+if __name__ == "__main__":
+    # Test
+    arr = [64, 34, 25, 12, 17, 20, 1, 2, 39, 59, 23]
+    bubble_sort(arr)
+    print("Array ordenado:", arr)
 
-# Test
-arr = [64, 34, 25, 12, 17, 20, 1, 2, 39, 59, 23]
-bubble_sort(arr)
-print("Array ordenado:", arr)
-
-#Taking the bytecode
-print("\nInstruções bytecode da função bubble_sort:")
-disassemble(bubble_sort)
-
+    #Taking the bytecode
+    print("\nInstruções bytecode da função bubble_sort:")
+    disassemble(bubble_sort)
