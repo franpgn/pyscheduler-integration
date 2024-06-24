@@ -1,5 +1,9 @@
 import dis
 import re
+
+from simulator.Memory import Mem
+
+
 def disassemble(code):
     infos = dis.code_info(code)
 
@@ -26,12 +30,17 @@ def disassemble(code):
 
     reduced_instructions = [(instr.opcode, instr.arg) for instr in instructions]
 
-    print(instructions)
+    #print(instructions)
 
-    with open("load.txt", "w") as f:
-        f.write(f"STACK SIZE|{stack_size}\n")
-        f.write(f"CONSTANTS|{constant_values}\n")
-        f.write(f"LOCALS|{variable_values}\n")
-        f.write(f"INSTRUCTIONS|{reduced_instructions}\n")
+    mem = Mem()
+    mem.add_process({
+        "id": mem.get_last_id(),
+        "stack_size": stack_size,
+        "constants": constant_values,
+        "locals_var": variable_values,
+        "instructions": reduced_instructions
+    }
+    )
+    json_data = mem.get_process_queue()
+    print(f'Novo processo na memoria: {json_data[-1]}')
 
-    return instructions
