@@ -1,4 +1,10 @@
-from disassemble import disassemble
+import os
+import sys
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.append(project_root)
+
+from simulator.src.disassemble import disassemble
 
 def bubble_sort(arr):
     n = len(arr)
@@ -9,6 +15,7 @@ def bubble_sort(arr):
             # Swap if the element found is greater than the next element
             if arr[j] > arr[j+1]:
                 arr[j], arr[j+1] = arr[j+1], arr[j]
+                
 if __name__ == "__main__":
     # Test
     arr = [64, 34, 25, 12, 17, 20, 1, 2, 39, 59, 23]
