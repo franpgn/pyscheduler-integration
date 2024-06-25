@@ -33,8 +33,8 @@ def disassemble(code):
     stack_size = re.search(r"Stack size:\s*(\d+)", infos).group(1)
 
     instructions = list(dis.get_instructions(code))
-
-    reduced_instructions = [(instr.opcode, instr.arg) for instr in instructions]
+    processed = False
+    reduced_instructions = [(instr.opcode, instr.arg, processed) for instr in instructions]
 
     #print(instructions)
 
