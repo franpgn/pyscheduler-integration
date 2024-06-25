@@ -1,7 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.ndimage import convolve
-from disassemble import disassemble
+import sys
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+sys.path.append(project_root)
+
+from simulator.src.disassemble import disassemble
 
 def mean_filter(image, kernel_size = 3):
     kernel = np.ones((kernel_size, kernel_size)) / (kernel_size * kernel_size)

@@ -1,7 +1,13 @@
 import dis
 import re
+import sys
+import os
 
-from simulator.Memory import Mem
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+sys.path.append(project_root)
+
+from simulator.memory import Mem
 
 
 def disassemble(code):
