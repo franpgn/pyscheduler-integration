@@ -1,10 +1,11 @@
-import os
 import sys
+import os
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-from simulator.src.disassemble import disassemble
+from apps.src.disassemble import disassemble
 
 def bubble_sort(arr):
     n = len(arr)

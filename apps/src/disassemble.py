@@ -1,7 +1,13 @@
 import dis
 import re
+import sys
+import os
 
-from simulator.Memory import Mem
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+sys.path.append(project_root)
+
+from simulator.src.memory import Memory
 
 
 def disassemble(code):
@@ -27,20 +33,20 @@ def disassemble(code):
     stack_size = re.search(r"Stack size:\s*(\d+)", infos).group(1)
 
     instructions = list(dis.get_instructions(code))
-
-    reduced_instructions = [(instr.opcode, instr.arg) for instr in instructions]
+    processed = False
+    reduced_instructions = [(instr.opcode, instr.arg, processed) for instr in instructions]
 
     #print(instructions)
 
-    mem = Mem()
-    mem.add_process({
-        "id": mem.get_last_id(),
+    Memory.__init__()
+    Memory.add_process({
+        "id": Memory.get_last_id(),
         "stack_size": stack_size,
         "constants": constant_values,
         "locals_var": variable_values,
         "instructions": reduced_instructions
     }
     )
-    json_data = mem.get_process_queue()
-    print(f'Novo processo na memoria: {json_data[-1]}')
+    json_data = Memory.get_process_queue()
+    print(f'Novo processo na memoria: {json_data[-1]['id']}')
 

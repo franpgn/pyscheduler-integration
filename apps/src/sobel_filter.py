@@ -1,7 +1,14 @@
 import numpy as np
 from scipy.ndimage import convolve
 import matplotlib.pyplot as plt
-from disassemble import disassemble
+import sys
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+sys.path.append(project_root)
+
+from apps.src.disassemble import disassemble
 
 def sobel_filter(image):
     Kx = np.array([[-1, 0, 1],
