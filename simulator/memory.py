@@ -4,7 +4,8 @@ import os
 
 class Mem:
     def __init__(self):
-        self.data = os.path.join('../DATA', 'mem.json')
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.data = os.path.join(current_dir, 'DATA', 'mem.json')
         if os.path.exists(self.data):
             self.load_process_queue()
         else:
