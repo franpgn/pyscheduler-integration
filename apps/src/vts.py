@@ -5,7 +5,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-from simulator.src.disassemble import disassemble
+from apps.src.disassemble import disassemble
 
 def VTS1(word1, word2):
     # Initialize two dictionaries to count the frequency of each letter
