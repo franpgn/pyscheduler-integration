@@ -10,6 +10,8 @@ class Memory:
 
     @staticmethod
     def __init__():
+        if not os.path.exists(Memory.data_dir):
+            os.makedirs(Memory.data_dir)
         if os.path.exists(Memory.__data):
             print("Iniciando memoria")
             Memory.__load_process_queue()
