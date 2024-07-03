@@ -6,19 +6,22 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 from simulator.src.memory import Memory
-from simulator.src.ULA import ULA
+from simulator.src.ula import ULA
+from pyscheduler.src.process import Process
 
 
 class CPU:
     def __init__(self):
 
         Memory.__init__()
-        lines = Memory.get_process_queue()
+        Memory.send_process_queue()
+        Memory.start_scheduler()
+        
 
-        self.stack_size = int(lines[-1]['stack_size'])
-        self.constants = lines[-1]['constants']
-        self.locals_var = lines[-1]['locals_var']
-        self.instructions = lines[-1]['instructions']
+        self.stack_size = 0
+        self.constants = 0
+        self.local_vars = 0
+        self.instructions = 0
         self.pc = 0
         self.ULA = ULA(self.stack_size)
 
@@ -111,7 +114,7 @@ class CPU:
 
         print("MEMORY:")
         print(f"CONSTANTS -> {self.constants}")
-        print(f"LOCALS -> {self.locals_var}")
+        print(f"LOCALS -> {self.local_vars}")
         print()
 
         print("STACK:")
@@ -121,13 +124,13 @@ class CPU:
         self.ULA.stack.PUSH(self.constants[index])
 
     def LOAD_FAST(self, index):
-        self.ULA.stack.PUSH(self.locals_var[index])
+        self.ULA.stack.PUSH(self.local_vars[index])
 
     def STORE_FAST(self, index):
-        self.locals_var[index] = self.ULA.stack.POP_TOP()
+        self.local_vars[index] = self.ULA.stack.POP_TOP()
 
     def DELETE_FAST(self, index):
-        del self.locals_var[index]
+        del self.local_vars[index]
 
     def JUMP_FORWARD(self, offset):
         self.pc += offset
@@ -169,13 +172,13 @@ class CPU:
     def RESUME(self):
         pass
 
-    def RUN(self):
-        while self.pc < len(self.instructions):
+    def RUN(self, process, ):
+        while self.pc < len(process.instructions):
             print("-" * 50)
             print()
-            instr = self.instructions[self.pc]
-            opcode = instr[0]
-            argument = instr[1]
+            instruction = process.instructions[self.pc]
+            opcode = instruction[0]
+            argument = instruction[1]
 
             if opcode in self.redirect:
                 function, has_argument = self.redirect[opcode]
@@ -188,13 +191,13 @@ class CPU:
                 break
 
             print("PC -> ", self.pc)
-            instr_name = self.available_instructions.get(opcode, opcode)
-            print(f"{instr_name} -> OPCODE {opcode} | ARGUMENT {argument}")
+            instruction_name = self.available_instructions.get(opcode, opcode)
+            print(f"{instruction_name} -> OPCODE {opcode} | ARGUMENT {argument}")
             print()
 
             print("MEMORY:")
-            print(f"CONSTANTS -> {self.constants}")
-            print(f"LOCALS -> {self.locals_var}")
+            print(f"CONSTANTS -> {process.constants}")
+            print(f"LOCALS -> {process.local_vars}")
             print()
 
             if opcode == 83:
@@ -202,7 +205,7 @@ class CPU:
                 print()
                 break
             elif opcode == 121:
-                print("RETURN VALUE ->", self.constants[argument])
+                print("RETURN VALUE ->", process.constants[argument])
                 print()
                 break
             else:
@@ -210,6 +213,7 @@ class CPU:
                 self.ULA.stack.SHOW_STACK()
             print("-" * 50)
             self.pc += 1
+        process.pc = self.pc
 
 
 # Exemplo de uso

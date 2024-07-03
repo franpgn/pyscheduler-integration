@@ -9,7 +9,6 @@ sys.path.append(project_root)
 
 from simulator.src.memory import Memory
 
-
 def disassemble(code):
     infos = dis.code_info(code)
 
@@ -36,17 +35,17 @@ def disassemble(code):
     processed = False
     reduced_instructions = [(instr.opcode, instr.arg, processed) for instr in instructions]
 
-    #print(instructions)
-
     Memory.__init__()
     Memory.add_process({
-        "id": Memory.get_last_id(),
+        "pid": Memory.get_last_id(),
+        "burst_time": 0,
+        "priority": 1,
         "stack_size": stack_size,
         "constants": constant_values,
-        "locals_var": variable_values,
+        "local_vars": variable_values,
         "instructions": reduced_instructions
     }
     )
     json_data = Memory.get_process_queue()
-    print(f'Novo processo na memoria: {json_data[-1]['id']}')
+    print(f'New process on memory: {json_data[-1]['pid']}')
 
