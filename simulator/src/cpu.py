@@ -41,10 +41,12 @@ class CPU:
             102: "BUILD_TUPLE",
             103: "BUILD_LIST",
             104: "BUILD_SET",
+            106: "LOAD_ATTR",
             107: "COMPARE_OP",
             110: "JUMP_FORWARD",
             114: "POP_JUMP_IF_FALSE",
             115: "POP_JUMP_IF_TRUE",
+            116: "LOAD_GLOBAL",
             117: "IS_OP",
             118: "CONTAINS_OP",
             120: "COPY",
@@ -79,10 +81,12 @@ class CPU:
             83: (self.ULA.stack.RETURN_VALUE, 0),
             99: (self.ULA.stack.SWAP, 1),
             100: (self.LOAD_CONST, 1),
+            106: (self.LOAD_ATTR, 2),
             107: (self.ULA.COMPARE_OP, 1),
             110: (self.JUMP_FORWARD, 1),
             114: (self.POP_JUMP_IF_FALSE, 1),
             115: (self.POP_JUMP_IF_TRUE, 1),
+            116: (self.LOAD_GLOBAL, 1),
             117: (self.ULA.IS_OP, 1),
             118: (self.ULA.CONTAINS_OP, 1),
             120: (self.ULA.stack.COPY, 1),
@@ -140,6 +144,12 @@ class CPU:
 
     def JUMP_BACKWARD_NO_INTERRUPT(self, offset):
         self.pc -= offset
+
+    def LOAD_GLOBAL(self, name):
+        self.ULA.stack.PUSH(globals()[name])
+
+    def LOAD_ATTR(self, obj, attr):
+        self.ULA.stack.PUSH(getattr(self.ULA.stack.POP_TOP(), attr))
 
     def POP_JUMP_IF_TRUE(self, offset):
         if self.ULA.stack.POP_TOP():
