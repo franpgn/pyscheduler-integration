@@ -50,11 +50,20 @@ if __name__ == "__main__":
     plt.title('Original')
     plt.imshow(image, cmap='gray')
     plt.axis('off')
+    plt.subplot(1, 2, 1)
+    plt.title('Original')
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
 
     plt.subplot(1, 2, 2)
     plt.title('Sobel Filter')
     plt.imshow(filtered_image, cmap='gray')
     plt.axis('off')
+    plt.subplot(1, 2, 2)
+    plt.title('Sobel Filter')
+    plt.imshow(filtered_image, cmap='gray')
+    plt.axis('off')
 
+    plt.show()
     plt.show()
 
