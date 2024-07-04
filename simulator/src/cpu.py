@@ -1,28 +1,27 @@
 import sys
 import os
 import json
-
-script_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
-sys.path.append(project_root)
 from simulator.src.memory import Memory
 from simulator.src.ula import ULA
 from pyscheduler.src.process import Process
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
+sys.path.append(project_root)
+
 
 class CPU:
-    def __init__(self):
+    def __init__(self, process: Process):
 
         Memory.__init__()
         Memory.send_process_queue()
         Memory.start_scheduler()
-        
 
-        self.stack_size = 0
-        self.constants = 0
-        self.local_vars = 0
-        self.instructions = 0
-        self.pc = 0
+        self.constants = process.constants
+        self.local_vars = process.local_vars
+        self.stack_size = process.stack_size
+        self.instructions = process.instructions
+        self.pc = process.pc
         self.ULA = ULA(self.stack_size)
 
         self.available_instructions = {
@@ -182,7 +181,7 @@ class CPU:
     def RESUME(self):
         pass
 
-    def RUN(self, process, ):
+    def RUN(self, process: Process):
         while self.pc < len(process.instructions):
             print("-" * 50)
             print()
@@ -224,9 +223,3 @@ class CPU:
             print("-" * 50)
             self.pc += 1
         process.pc = self.pc
-
-
-# Exemplo de uso
-cpu = CPU()
-cpu.SHOW_CPU()
-cpu.RUN()

@@ -1,11 +1,12 @@
 import sys
 import os
+from simulator.src.stack import Stack
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-from simulator.src.stack import Stack
+
 class ULA:
     def __init__(self, size):
         self.stack = Stack(size)

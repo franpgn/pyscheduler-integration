@@ -2,12 +2,12 @@ import dis
 import re
 import sys
 import os
+from simulator.src.memory import Memory
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-from simulator.src.memory import Memory
 
 def disassemble(code):
     infos = dis.code_info(code)
