@@ -13,40 +13,53 @@ from simulator.src.memory import Memory
 def disassemble(code):
     infos = dis.code_info(code)
 
+    # Extrair constantes
     constants = re.search(r"Constants:\s*(.*?)(?=\n[A-Z]|\Z)", infos, re.DOTALL)
-
     if constants:
         constant_lines = constants.group(1).strip().split("\n")
-        constant_values = [line.split(': ')[1] for line in constant_lines]
+        constant_values = [line.split(': ')[1].strip() for line in constant_lines]
         constant_values = [eval(value) for value in constant_values]
     else:
         constant_values = []
 
+    # Extrair variáveis locais
     variables = re.search(r"Variable names:\s*(.*?)(?=\n[A-Z]|\Z)", infos, re.DOTALL)
-
     if variables:
         variable_lines = variables.group(1).strip().split("\n")
-        variable_values = [line.split(': ')[1] for line in variable_lines]
+        variable_values = [line.split(': ')[1].strip() for line in variable_lines]
     else:
         variable_values = []
 
-    stack_size = re.search(r"Stack size:\s*(\d+)", infos).group(1)
+    # Extrair nomes
+    names = re.search(r"Names:\s*(.*?)(?=\n[A-Z]|\Z)", infos, re.DOTALL)
+    if names:
+        name_lines = names.group(1).strip().split("\n")
+        name_values = [line.split(': ')[1].strip() for line in name_lines]
+    else:
+        name_values = []
 
+    # Extrair tamanho da pilha
+    stack_size_match = re.search(r"Stack size:\s*(\d+)", infos)
+    stack_size = int(stack_size_match.group(1)) if stack_size_match else 0
+
+    # Extrair instruções
     instructions = list(dis.get_instructions(code))
     processed = False
-    reduced_instructions = [(instr.opcode, instr.arg, processed) for instr in instructions]
+    reduced_instructions = [(instr.opcode, instr.arg, instr.argval, processed) for instr in instructions]
 
-    #print(instructions)
+    print(dis.dis(code))
 
+    # Inicializar memória e adicionar processo
     Memory.__init__()
     Memory.add_process({
         "id": Memory.get_last_id(),
         "stack_size": stack_size,
         "constants": constant_values,
         "locals_var": variable_values,
+        "names": name_values,
         "instructions": reduced_instructions
-    }
-    )
-    json_data = Memory.get_process_queue()
-    print(f'Novo processo na memoria: {json_data[-1]['id']}')
+    })
 
+    # Obter e imprimir o último processo na memória
+    #json_data = Memory.get_process_queue()
+    #print(f'Novo processo na memoria: {json_data[-1]["id"]}')

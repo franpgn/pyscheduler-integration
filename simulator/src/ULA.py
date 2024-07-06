@@ -6,6 +6,7 @@ project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
 from simulator.src.stack import Stack
+
 class ULA:
     def __init__(self, size):
         self.stack = Stack(size)
@@ -21,49 +22,37 @@ class ULA:
         }
 
         self.available_bin_operators = {
-            0: "+",
-            1: "&",
-            2: "//",
-            3: "<<",
-            5: "*",
-            6: "%",
-            7: "|",
-            8: "**",
-            9: ">>",
-            10: "-",
-            11: "/",
-            12: "^",
-            13: "+=",
-            14: "&=",
-            15: "//=",
-            16: "<<=",
-            18: "*=",
-            19: "%=",
-            20: "|=",
-            21: "**=",
-            22: ">>=",
-            23: "-=",
-            24: "/=",
-            25: "^=",
+            0: lambda x, y: x + y,
+            1: lambda x, y: x & y,
+            2: lambda x, y: x // y,
+            3: lambda x, y: x << y,
+            5: lambda x, y: x * y,
+            6: lambda x, y: x % y,
+            7: lambda x, y: x | y,
+            8: lambda x, y: x ** y,
+            9: lambda x, y: x >> y,
+            10: lambda x, y: x - y,
+            11: lambda x, y: x / y,
+            12: lambda x, y: x ^ y,
         }
 
         self.available_cmp_operators = {
-            2: "<",
-            26: "<=",
-            40: "==",
-            55: "!=",
-            68: ">",
-            92: ">=",
+            2: lambda x, y: x < y,
+            26: lambda x, y: x <= y,
+            40: lambda x, y: x == y,
+            55: lambda x, y: x != y,
+            68: lambda x, y: x > y,
+            92: lambda x, y: x >= y,
         }
 
         self.available_identity_operators = {
-            0: "is",
-            1: "is not",
+            0: lambda x, y: x is y,
+            1: lambda x, y: x is not y,
         }
 
         self.available_contains_operators = {
-            0: "in",
-            1: "not in",
+            0: lambda x, y: y in x,
+            1: lambda x, y: y not in x,
         }
 
     def UNARY_NEGATIVE(self):
@@ -90,7 +79,8 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
-        self.stack.PUSH(eval(f"{lhs} {self.available_bin_operators[operator]} {rhs}"))
+        result = self.available_bin_operators[operator](lhs, rhs)
+        self.stack.PUSH(result)
 
     def COMPARE_OP(self, operator):
         if self.stack.top < 1:
@@ -104,7 +94,8 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
-        self.stack.PUSH(eval(f"{lhs} {self.available_cmp_operators[operator]} {rhs}"))
+        result = self.available_cmp_operators[operator](lhs, rhs)
+        self.stack.PUSH(result)
 
     def IS_OP(self, operator):
         if self.stack.top < 1:
@@ -118,7 +109,8 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
-        self.stack.PUSH(eval(f"{lhs} {self.available_identity_operators[operator]} {rhs}"))
+        result = self.available_identity_operators[operator](lhs, rhs)
+        self.stack.PUSH(result)
 
     def CONTAINS_OP(self, operator):
         if self.stack.top < 1:
@@ -132,4 +124,5 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
-        self.stack.PUSH(eval(f"{lhs} {self.available_contains_operators[operator]} {rhs}"))
+        result = self.available_contains_operators[operator](lhs, rhs)
+        self.stack.PUSH(result)

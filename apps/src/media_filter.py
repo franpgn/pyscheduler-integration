@@ -10,7 +10,13 @@ sys.path.append(project_root)
 
 from apps.src.disassemble import disassemble
 
-def mean_filter(image, kernel_size = 3):
+def mean_filter():
+    image = np.array([[10, 10, 10, 10, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 50, 100, 50, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 10, 10, 10, 10]])
+    kernel_size = 3
     kernel = np.ones((kernel_size, kernel_size)) / (kernel_size * kernel_size)
     
     blurred_image = convolve(image, kernel)
@@ -26,7 +32,8 @@ image = np.array([[10, 10, 10, 10, 10],
                   [10, 50, 100, 50, 10],
                   [10, 50, 50, 50, 10],
                   [10, 10, 10, 10, 10]])
-filtered_image = mean_filter(image)
+filtered_image = mean_filter()
+print(filtered_image)
 plt.figure(figsize=(10, 5))
 # View
 plt.subplot(1, 2, 1)
