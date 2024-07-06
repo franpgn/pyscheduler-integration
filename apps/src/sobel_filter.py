@@ -10,7 +10,13 @@ sys.path.append(project_root)
 
 from apps.src.disassemble import disassemble
 
-def sobel_filter(image):
+def sobel_filter():
+    image = np.array([[10, 10, 10, 10, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 50, 100, 50, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 10, 10, 10, 10]])
+
     Kx = np.array([[-1, 0, 1],
                    [-2, 0, 2],
                    [-1, 0, 1]])
@@ -27,7 +33,7 @@ def sobel_filter(image):
     return G
 
 if __name__ == "__main__":
-    disassemble(sobel_filter)
+    disassemble(sobel_filter.__code__)
 
     # Test
     image = np.array([[10, 10, 10, 10, 10],
@@ -35,8 +41,8 @@ if __name__ == "__main__":
                       [10, 50, 100, 50, 10],
                       [10, 50, 50, 50, 10],
                       [10, 10, 10, 10, 10]])
-    filtered_image = sobel_filter(image)
-
+    filtered_image = sobel_filter()
+    print(filtered_image)
     # View
     plt.figure(figsize=(10, 5))
 
