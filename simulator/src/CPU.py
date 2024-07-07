@@ -45,6 +45,7 @@ class CPU:
             102: "BUILD_TUPLE",
             103: "BUILD_LIST",
             104: "BUILD_SET",
+            105: "BUILD_MAP",
             106: "LOAD_ATTR",
             107: "COMPARE_OP",
             110: "JUMP_FORWARD",
@@ -89,6 +90,7 @@ class CPU:
             102: (self.BUILD_TUPLE, 1),
             103: (self.BUILD_LIST, 1),
             104: (self.BUILD_SET, 1),
+            105: (self.BUILD_MAP, 1),
             106: (self.LOAD_ATTR, 1),
             107: (self.ULA.COMPARE_OP, 1),
             110: (self.JUMP_FORWARD, 1),
@@ -255,6 +257,15 @@ class CPU:
             self.JUMP_BACKWARD(-offset)
         else:
             self.JUMP_FORWARD(offset)
+    
+    def BUILD_MAP(self, count):
+        items = {}
+        for _ in range(count):
+            value = self.ULA.stack.POP_TOP()
+            key = self.ULA.stack.POP_TOP()
+            items[key] = value
+        self.ULA.stack.PUSH(items)
+
 
     def CALL(self, arg_count):
         # Recuperar os argumentos da pilha
