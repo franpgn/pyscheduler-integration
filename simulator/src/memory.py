@@ -59,18 +59,12 @@ class Memory:
         for process in Memory.__ready_queue:
             Scheduler.set_ready_queue(process)
         print('Memory process queue sent to Scheduler')
-        Memory.start_scheduler()
 
     @staticmethod
     def start_scheduler():
         Scheduler.add_processes()
-        Scheduler.start_scheduling()
         print('Scheduler started')
-
-    @staticmethod
-    def process_to_cpu():
-        process = Scheduler.get_process()
-        print(f'Process {process["pid"]} sent to CPU')
+        Scheduler.start_scheduling()
 
     @staticmethod
     def clear_memory():

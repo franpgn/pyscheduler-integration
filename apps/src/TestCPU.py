@@ -8,9 +8,10 @@ sys.path.append(project_root)
 
 
 def my_function():
-    a=1
-    b=2
-    c=a+b
+    a = 1
+    b = 2
+    c = a + b
     return c
+
 
 disassemble(my_function)

@@ -40,7 +40,7 @@ def disassemble(code):
         "pid": Memory.get_last_id(),
         "burst_time": 0,
         "priority": 1,
-        "stack_size": stack_size,
+        "stack_size": int(stack_size),
         "constants": constant_values,
         "local_vars": variable_values,
         "instructions": reduced_instructions

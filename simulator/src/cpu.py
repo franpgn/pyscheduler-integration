@@ -1,7 +1,8 @@
 import sys
 import os
 import json
-from simulator.src.memory import Memory
+import time
+
 from simulator.src.ula import ULA
 from pyscheduler.src.process import Process
 
@@ -12,10 +13,6 @@ sys.path.append(project_root)
 
 class CPU:
     def __init__(self, process: Process):
-
-        Memory.__init__()
-        Memory.send_process_queue()
-        Memory.start_scheduler()
 
         self.constants = process.constants
         self.local_vars = process.local_vars
@@ -181,8 +178,10 @@ class CPU:
     def RESUME(self):
         pass
 
-    def RUN(self, process: Process):
-        while self.pc < len(process.instructions):
+    def RUN(self, process: Process, quantum):
+        time_start = time.time()
+        quantum /= 1000
+        while self.pc < len(process.instructions) and time_start + quantum > time.time():
             print("-" * 50)
             print()
             instruction = process.instructions[self.pc]
@@ -222,4 +221,4 @@ class CPU:
                 self.ULA.stack.SHOW_STACK()
             print("-" * 50)
             self.pc += 1
-        process.pc = self.pc
+            process.pc = self.pc
