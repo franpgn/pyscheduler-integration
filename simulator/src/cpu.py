@@ -181,7 +181,7 @@ class CPU:
     def RUN(self, process: Process, quantum):
         time_start = time.time()
         quantum /= 1000
-        while self.pc < len(process.instructions) and time_start + quantum > time.time():
+        while not process.pc > len(process.instructions) and time_start + quantum > time.time():
             print("-" * 50)
             print()
             instruction = process.instructions[self.pc]
@@ -197,6 +197,8 @@ class CPU:
             else:
                 print("INVALID OPCODE")
                 break
+
+            ULA.SLEEP_TIME(opcode)
 
             print("PC -> ", self.pc)
             instruction_name = self.available_instructions.get(opcode, opcode)
