@@ -7,6 +7,7 @@ sys.path.append(project_root)
 
 from simulator.src.stack import Stack
 
+
 class ULA:
     def __init__(self, size):
         self.stack = Stack(size)
@@ -15,6 +16,9 @@ class ULA:
             11: "UNARY_NEGATIVE",
             12: "UNARY_NOT",
             15: "UNARY_INVERT",
+            25: "BINARY_SUBSCR",
+            60: "STORE_SUBSCR",
+            68: "GET_ITER",
             107: "COMPARE_OP",
             117: "IS_OP",
             118: "CONTAINS_OP",
@@ -51,19 +55,28 @@ class ULA:
         }
 
         self.available_contains_operators = {
-            0: lambda x, y: y in x,
-            1: lambda x, y: y not in x,
+            0: lambda x, y: x in y,
+            1: lambda x, y: x not in y,
         }
 
     def UNARY_NEGATIVE(self):
+        if self.stack.top < 0:
+            print("STACK UNDERFLOW -- NOT ENOUGH ELEMENTS")
+            return
         tos = self.stack.POP_TOP()
         self.stack.PUSH(-tos)
 
     def UNARY_NOT(self):
+        if self.stack.top < 0:
+            print("STACK UNDERFLOW -- NOT ENOUGH ELEMENTS")
+            return
         tos = self.stack.POP_TOP()
         self.stack.PUSH(not tos)
 
     def UNARY_INVERT(self):
+        if self.stack.top < 0:
+            print("STACK UNDERFLOW -- NOT ENOUGH ELEMENTS")
+            return
         tos = self.stack.POP_TOP()
         self.stack.PUSH(~tos)
 
@@ -81,6 +94,18 @@ class ULA:
 
         result = self.available_bin_operators[operator](lhs, rhs)
         self.stack.PUSH(result)
+
+    def BINARY_SUBSCR(self):
+        if self.stack.top < 1:
+            print("STACK UNDERFLOW -- NOT ENOUGH ELEMENTS")
+            return
+        index = self.stack.POP_TOP()
+        container = self.stack.POP_TOP()
+        try:
+            value = container[index]
+            self.stack.PUSH(value)
+        except (IndexError, TypeError) as e:
+            print(f"SUBSCRIPT ERROR: {e}")
 
     def COMPARE_OP(self, operator):
         if self.stack.top < 1:
@@ -124,5 +149,29 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
+        if lhs is None:
+            print("CONTAINS_OP ERROR: lhs is None")
+            self.stack.PUSH(False)
+            return
+
         result = self.available_contains_operators[operator](lhs, rhs)
         self.stack.PUSH(result)
+
+    def STORE_SUBSCR(self):
+        if self.stack.top < 2:
+            print("STACK UNDERFLOW -- NOT ENOUGH ELEMENTS")
+            return
+        value = self.stack.POP_TOP()
+        index = self.stack.POP_TOP()
+        container = self.stack.POP_TOP()
+        try:
+            container[index] = value
+        except (IndexError, TypeError) as e:
+            print(f"STORE ERROR: {e}")
+
+    def GET_ITER(self):
+        try:
+            self.stack.PUSH(iter(self.stack.POP_TOP()))
+        except TypeError as e:
+            print(f"Erro ao obter iterador: {e}")
+            self.stack.PUSH(None)

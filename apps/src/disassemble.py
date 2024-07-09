@@ -45,7 +45,7 @@ def disassemble(code):
     # Extrair instruções
     instructions = list(dis.get_instructions(code))
     processed = False
-    reduced_instructions = [(instr.opcode, instr.arg, instr.argval, processed) for instr in instructions]
+    reduced_instructions = [(instr.offset, instr.opcode, instr.arg, instr.argval, processed) for instr in instructions]
 
     print(dis.dis(code))
 
@@ -57,7 +57,8 @@ def disassemble(code):
         "constants": constant_values,
         "locals_var": variable_values,
         "names": name_values,
-        "instructions": reduced_instructions
+        "instructions": reduced_instructions,
+        "pc_total": reduced_instructions[-1][0]
     })
 
     # Obter e imprimir o último processo na memória

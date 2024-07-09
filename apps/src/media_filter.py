@@ -18,7 +18,7 @@ def mean_filter():
                       [10, 10, 10, 10, 10]])
     kernel_size = 3
     kernel = np.ones((kernel_size, kernel_size)) / (kernel_size * kernel_size)
-    
+    print(kernel)
     blurred_image = convolve(image, kernel)
     
     return blurred_image

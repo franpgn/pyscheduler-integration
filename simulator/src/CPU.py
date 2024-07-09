@@ -1,7 +1,9 @@
 import sys
 import os
+import json
 import numpy as np
 from scipy.ndimage import convolve
+from collections.abc import Iterator
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
@@ -16,6 +18,7 @@ builtin_functions = {
     # Adicione mais funções embutidas conforme necessário
 }
 
+
 class CPU:
     def __init__(self):
         Memory.__init__()
@@ -27,6 +30,7 @@ class CPU:
         self.names = lines[-1].get('names', [])
         self.instructions = lines[-1]['instructions']
         self.pc = 0
+        self.pc_total = int(lines[-1]['pc_total'])
         self.ULA = ULA(self.stack_size)
 
         self.available_instructions = {
@@ -37,6 +41,8 @@ class CPU:
             11: "UNARY_NEGATIVE",
             12: "UNARY_NOT",
             15: "UNARY_INVERT",
+            25: "BINARY_SUBSCR",
+            60: "STORE_SUBSCR",
             68: "GET_ITER",
             83: "RETURN_VALUE",
             93: "FOR_ITER",
@@ -62,7 +68,6 @@ class CPU:
             126: "DELETE_FAST",
             128: "POP_JUMP_IF_NOT_NONE",
             129: "POP_JUMP_IF_NONE",
-            133: "BUILD_SLICE",
             134: "JUMP_BACKWARD_NO_INTERRUPT",
             140: "JUMP_BACKWARD",
             150: "YIELD_VALUE",
@@ -84,7 +89,11 @@ class CPU:
             11: (self.ULA.UNARY_NEGATIVE, 0),
             12: (self.ULA.UNARY_NOT, 0),
             15: (self.ULA.UNARY_INVERT, 0),
+            25: (self.ULA.BINARY_SUBSCR, 0),
+            60: (self.ULA.STORE_SUBSCR, 0),
+            68: (self.ULA.GET_ITER, 0),
             83: (self.ULA.stack.RETURN_VALUE, 0),
+            93: (self.FOR_ITER, 1),
             99: (self.ULA.stack.SWAP, 1),
             100: (self.LOAD_CONST, 1),
             102: (self.BUILD_TUPLE, 1),
@@ -123,8 +132,8 @@ class CPU:
 
         print("INSTRUCTIONS:")
         for instr in self.instructions:
-            instr_name = self.available_instructions.get(instr[0], instr[0])
-            print(f"{instr_name} -> OPCODE {instr[0]} | ARGUMENT {instr[1]}")
+            instr_name = self.available_instructions.get(instr[1], instr[1])
+            print(f"{instr_name} -> OPCODE {instr[1]} | ARGUMENT {instr[2]}")
         print()
 
         print(f"PC -> {self.pc}")
@@ -257,7 +266,7 @@ class CPU:
             self.JUMP_BACKWARD(-offset)
         else:
             self.JUMP_FORWARD(offset)
-    
+
     def BUILD_MAP(self, count):
         items = {}
         for _ in range(count):
@@ -265,7 +274,6 @@ class CPU:
             key = self.ULA.stack.POP_TOP()
             items[key] = value
         self.ULA.stack.PUSH(items)
-
 
     def CALL(self, arg_count):
         # Recuperar os argumentos da pilha
@@ -283,9 +291,28 @@ class CPU:
                 # Verificar os tipos e formas dos argumentos
                 if function.__name__ == 'convolve':
                     input_array, kernel = args
-                    print(f"Forma do input_array: {input_array.shape}")
+                    # Ajustar as dimensões do kernel para que sejam compatíveis com input_array
+                    input_array = np.asarray(input_array)
+                    kernel = np.asarray(kernel)
+
+                    if input_array.ndim != kernel.ndim:
+                        if kernel.ndim < input_array.ndim:
+                            kernel = kernel.reshape((1,) * (input_array.ndim - kernel.ndim) + kernel.shape)
+                        elif input_array.ndim < kernel.ndim:
+                            input_array = input_array.reshape(
+                                (1,) * (kernel.ndim - input_array.ndim) + input_array.shape)
+
+                    # Print de debug para verificar as formas
+                    print(f"Forma do input_array após ajuste: {input_array.shape}")
                     print(f"Forma do kernel: {kernel.shape}")
-                # Invocar a função com os argumentos recuperados
+
+                    if kernel.ndim != input_array.ndim:
+                        raise ValueError("Kernel deve ser um array da mesma dimensionalidade que o input_array")
+
+                    # Imprimir as formas finais antes da convolução
+                    print(f"Forma final do input_array: {input_array.shape}")
+                    print(f"Forma final do kernel: {kernel.shape}")
+
                 result = function(*args)
                 print(f"Resultado da função: {result}")
             except TypeError as e:
@@ -294,19 +321,35 @@ class CPU:
             except RuntimeError as e:
                 print(f"Erro de execução ao chamar a função: {e}")
                 result = None
+            except ValueError as e:
+                print(f"Erro de valor ao chamar a função: {e}")
+                result = None
         else:
             raise TypeError(f"Objeto {function} não é chamável.")
 
         # Colocar o resultado de volta na pilha
         self.ULA.stack.PUSH(result)
 
+    def FOR_ITER(self, jump_offset):
+        iterator = self.ULA.stack.POP_TOP()
+        if isinstance(iterator, Iterator):       # Verifica se iterator é um iterador
+            try:
+                item = next(iterator)
+                self.ULA.stack.PUSH(iterator)  # Coloca o iterador de volta na pilha
+                self.ULA.stack.PUSH(item)
+            except StopIteration:
+                self.pc = jump_offset+1
+        else:
+            raise TypeError("Objeto não é um iterador")
+
     def RUN(self):
-        while self.pc < len(self.instructions):
+        while self.pc < self.pc_total:
             print("-" * 50)
             print()
-            instr = self.instructions[self.pc]
-            opcode = instr[0]
-            argument = instr[1]
+            instr = self.instructions[self.pc // 2]
+            opcode = instr[1]
+            argument = instr[2]
+            argument_val = instr[3]
 
             if opcode in self.redirect:
                 function, has_argument = self.redirect[opcode]
@@ -320,7 +363,7 @@ class CPU:
 
             print("PC -> ", self.pc)
             instr_name = self.available_instructions.get(opcode, opcode)
-            print(f"{instr_name} -> OPCODE {opcode} | ARGUMENT {argument}")
+            print(f"{instr_name} -> OPCODE {opcode} | ARGUMENT {argument} | ARGUMENT_VALUE {argument_val}")
             print()
 
             print("MEMORY:")
@@ -329,11 +372,11 @@ class CPU:
             print(f"NAMES -> {self.names}")
             print()
 
-            if opcode == 83:
+            if opcode == 83:  # RETURN_VALUE
                 print("RETURN VALUE ->", self.ULA.stack.RETURN_VALUE())
                 print()
                 break
-            elif opcode == 121:
+            elif opcode == 121:  # RETURN_CONST
                 print("RETURN VALUE ->", self.constants[argument])
                 print()
                 break
@@ -341,7 +384,7 @@ class CPU:
                 print("STACK:")
                 self.ULA.stack.SHOW_STACK()
             print("-" * 50)
-            self.pc += 1
+            self.pc += 2
 
 
 # Exemplo de uso

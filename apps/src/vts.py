@@ -7,7 +7,9 @@ sys.path.append(project_root)
 
 from apps.src.disassemble import disassemble
 
-def VTS1(word1, word2):
+def VTS():
+    word1 = 'amor'
+    word2 = 'roma'
     # Initialize two dictionaries to count the frequency of each letter
     count1 = {}
     count2 = {}
@@ -29,8 +31,6 @@ def VTS1(word1, word2):
     # Compare the two frequency dictionaries
     return count1 == count2
 
-disassemble(VTS1)
+print(VTS())
+disassemble(VTS)
 
-#Test
-print(VTS1('amor', 'roma')) #Return True
-print(VTS1('amor', 'rato')) #Return False
