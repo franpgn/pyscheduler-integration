@@ -1,11 +1,14 @@
 import sys
 import os
+import time
+
+from simulator.src.stack import Stack
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-from simulator.src.stack import Stack
+
 class ULA:
     def __init__(self, size):
         self.stack = Stack(size)
@@ -65,6 +68,55 @@ class ULA:
             0: "in",
             1: "not in",
         }
+
+    @staticmethod
+    def SLEEP_TIME(opcode):
+        sleep_times = {
+            1: 0.05,
+            4: 0.08,
+            5: 0.08,
+            9: 0.01,
+            11: 0.05,
+            12: 0.05,
+            15: 0.05,
+            68: 0.07,
+            83: 0.06,
+            93: 0.08,
+            99: 0.05,
+            100: 0.05,
+            102: 0.07,
+            103: 0.07,
+            104: 0.07,
+            106: 0.06,
+            107: 0.07,
+            110: 0.06,
+            114: 0.06,
+            115: 0.06,
+            116: 0.06,
+            117: 0.05,
+            118: 0.06,
+            120: 0.05,
+            121: 0.05,
+            122: 0.07,
+            124: 0.05,
+            125: 0.05,
+            126: 0.05,
+            128: 0.06,
+            129: 0.06,
+            133: 0.07,
+            134: 0.07,
+            140: 0.07,
+            150: 0.08,
+            151: 0.07,
+            157: 0.08,
+            162: 0.08,
+            163: 0.08,
+            260: 0.06,
+            261: 0.06
+        }
+
+        sleep_time = sleep_times.get(opcode, 0.1)
+        time.sleep(sleep_time)
 
     def UNARY_NEGATIVE(self):
         tos = self.stack.POP_TOP()
