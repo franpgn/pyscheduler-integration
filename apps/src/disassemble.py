@@ -16,7 +16,7 @@ def disassemble(code):
 
     if constants:
         constant_lines = constants.group(1).strip().split("\n")
-        constant_values = [line.split(': ')[1] for line in constant_lines]
+        constant_values = [line.split(': ')[1].strip() for line in constant_lines]
         constant_values = [eval(value) for value in constant_values]
     else:
         constant_values = []
@@ -25,15 +25,28 @@ def disassemble(code):
 
     if variables:
         variable_lines = variables.group(1).strip().split("\n")
-        variable_values = [line.split(': ')[1] for line in variable_lines]
+        variable_values = [line.split(': ')[1].strip() for line in variable_lines]
     else:
         variable_values = []
 
-    stack_size = re.search(r"Stack size:\s*(\d+)", infos).group(1)
+    # Extrair nomes
+    names = re.search(r"Names:\s*(.*?)(?=\n[A-Z]|\Z)", infos, re.DOTALL)
+    if names:
+        name_lines = names.group(1).strip().split("\n")
+        name_values = [line.split(': ')[1].strip() for line in name_lines]
+    else:
+        name_values = []
 
+    # Extrair tamanho da pilha
+    stack_size_match = re.search(r"Stack size:\s*(\d+)", infos)
+    stack_size = int(stack_size_match.group(1)) if stack_size_match else 0
+
+    # Extrair instruções
     instructions = list(dis.get_instructions(code))
     processed = False
-    reduced_instructions = [(instr.opcode, instr.arg, processed) for instr in instructions]
+    reduced_instructions = [(instruction.offset, instruction.opcode, instruction.arg, instruction.argval, processed) for instruction in instructions]
+
+    #print(instructions)
 
     Memory.__init__()
     Memory.add_process({
@@ -42,10 +55,11 @@ def disassemble(code):
         "priority": 1,
         "stack_size": int(stack_size),
         "constants": constant_values,
-        "local_vars": variable_values,
-        "instructions": reduced_instructions
+        "locals_var": variable_values,
+        "instructions": reduced_instructions,
+        "pc_total": reduced_instructions[-1][0]
     }
     )
     json_data = Memory.get_process_queue()
-    print(f'New process on memory: {json_data[-1]['pid']}')
+    print(f'Novo processo na memoria: {json_data[-1]['id']}')
 

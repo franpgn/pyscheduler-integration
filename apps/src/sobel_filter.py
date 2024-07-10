@@ -10,7 +10,13 @@ project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
 
-def sobel_filter(image):
+def sobel_filter():
+    image = np.array([[10, 10, 10, 10, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 50, 100, 50, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 10, 10, 10, 10]])
+
     Kx = np.array([[-1, 0, 1],
                    [-2, 0, 2],
                    [-1, 0, 1]])
@@ -27,7 +33,7 @@ def sobel_filter(image):
     return G
 
 if __name__ == "__main__":
-    disassemble(sobel_filter)
+    disassemble(sobel_filter.__code__)
 
     # Test
     image = np.array([[10, 10, 10, 10, 10],
@@ -35,11 +41,15 @@ if __name__ == "__main__":
                       [10, 50, 100, 50, 10],
                       [10, 50, 50, 50, 10],
                       [10, 10, 10, 10, 10]])
-    filtered_image = sobel_filter(image)
-
+    filtered_image = sobel_filter()
+    print(filtered_image)
     # View
     plt.figure(figsize=(10, 5))
 
+    plt.subplot(1, 2, 1)
+    plt.title('Original')
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
     plt.subplot(1, 2, 1)
     plt.title('Original')
     plt.imshow(image, cmap='gray')
@@ -49,6 +59,11 @@ if __name__ == "__main__":
     plt.title('Sobel Filter')
     plt.imshow(filtered_image, cmap='gray')
     plt.axis('off')
+    plt.subplot(1, 2, 2)
+    plt.title('Sobel Filter')
+    plt.imshow(filtered_image, cmap='gray')
+    plt.axis('off')
 
+    plt.show()
     plt.show()
 
