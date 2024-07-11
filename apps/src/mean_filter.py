@@ -26,26 +26,27 @@ def mean_filter():
     return blurred_image
 
 
-disassemble(mean_filter.__code__)
+def to_byte_code():
+    disassemble(mean_filter.__code__)
 
-#Test
-image = np.array([[10, 10, 10, 10, 10],
-                  [10, 50, 50, 50, 10],
-                  [10, 50, 100, 50, 10],
-                  [10, 50, 50, 50, 10],
-                  [10, 10, 10, 10, 10]])
-filtered_image = mean_filter()
-print(filtered_image)
-plt.figure(figsize=(10, 5))
-# View
-plt.subplot(1, 2, 1)
-plt.title('Original')
-plt.imshow(image, cmap='gray')
-plt.axis('off')
+    #Test
+    image = np.array([[10, 10, 10, 10, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 50, 100, 50, 10],
+                      [10, 50, 50, 50, 10],
+                      [10, 10, 10, 10, 10]])
+    filtered_image = mean_filter()
+    print(filtered_image)
+    plt.figure(figsize=(10, 5))
+    # View
+    plt.subplot(1, 2, 1)
+    plt.title('Original')
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
 
-plt.subplot(1, 2, 2)
-plt.title('Mean Filter')
-plt.imshow(filtered_image, cmap='gray')
-plt.axis('off')
+    plt.subplot(1, 2, 2)
+    plt.title('Mean Filter')
+    plt.imshow(filtered_image, cmap='gray')
+    plt.axis('off')
 
-plt.show()
+    plt.show()
