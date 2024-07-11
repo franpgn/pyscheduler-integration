@@ -341,7 +341,7 @@ class CPU:
     def RUN(self, process: Process, quantum):
         time_start = time.time()
         quantum /= 1000
-        while not process.pc >= process.total_pc:
+        while not process.pc > process.total_pc: #and time.time() - time_start < quantum:
             print("-" * 50)
             print()
             instruction = process.instructions[f"{self.pc}"]
@@ -361,9 +361,9 @@ class CPU:
 
             ULA.SLEEP_TIME(opcode)
 
-            print("PC -> ", self.pc)
-            instr_name = self.available_instructions.get(opcode, opcode)
-            print(f"{instr_name} -> OPCODE {opcode} | ARGUMENT {argument} | ARGUMENT_VALUE {argument_val}")
+            print("PC -> ", process.pc)
+            instruction_name = self.available_instructions.get(opcode, opcode)
+            print(f"{instruction_name} -> OPCODE {opcode} | ARGUMENT {argument} | ARGUMENT_VALUE {argument_val}")
             print()
 
             print("MEMORY:")
