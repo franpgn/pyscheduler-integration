@@ -62,4 +62,5 @@ class TestBubbleSort(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.TextTestRunner().run(unittest.defaultTestLoader.discover('apps/tests/unit'))
+

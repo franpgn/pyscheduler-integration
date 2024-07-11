@@ -1,7 +1,0 @@
-Código Teste: Filtro de Sobel
-O código é uma pequena aplicação do filtro de Sobel que detecta bordas em uma imagem calculando a derivada da intensidade da imagem em diferentes direções. Esta aplicação foi desenvolvida para fins de testar o simulador desenvolvido pelo Renato e ver possiveis intruções faltando.
-
-Ao executar o código em conjunto com o disassembler foi possivel indentificar as seguintes instruções:
-RESUME ,LOAD_GLOBAL, BUILD_LIST, LOAD_ATTR, LOAD_CONST, LIST_EXTEND , CALL, STORE_FAST, LOAD_FAST, BINARY_OP e RETURN_VALUE
-
-Destas apenas RESUME, LOAD_CONST, RETURN_VALUE, STORE_FAST, LOAD_FAST e BINARY_OP são instruções contempladas pelo simulador, enquanto LOAD_GLOBAL, BUILD_LIST, CALL, LOAD_ATTR e LIST_EXTEND não estão contempladas.
