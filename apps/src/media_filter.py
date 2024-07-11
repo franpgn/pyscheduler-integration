@@ -16,15 +16,17 @@ def mean_filter():
                       [10, 50, 100, 50, 10],
                       [10, 50, 50, 50, 10],
                       [10, 10, 10, 10, 10]])
-    kernel_size = 3
-    kernel = np.ones((kernel_size, kernel_size)) / (kernel_size * kernel_size)
-    print(kernel)
+
+    kernel = np.array([[0.11111111, 0.11111111, 0.11111111],
+                       [0.11111111, 0.11111111, 0.11111111],
+                       [0.11111111, 0.11111111, 0.11111111]])
+
     blurred_image = convolve(image, kernel)
     
     return blurred_image
 
 
-disassemble(mean_filter)
+disassemble(mean_filter.__code__)
 
 #Test
 image = np.array([[10, 10, 10, 10, 10],

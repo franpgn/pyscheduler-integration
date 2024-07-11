@@ -17,6 +17,7 @@ sys.path.append(project_root)
 builtin_functions = {
     'len': len,
     'range': range,
+    'print': print,  # Adiciona a função print aqui
     # Adicione mais funções embutidas conforme necessário
 }
 
@@ -29,6 +30,7 @@ class CPU:
         self.stack_size = process.stack_size
         self.instructions = process.instructions
         self.pc = process.pc
+        self.names = process.names
         self.ULA = ULA(self.stack_size)
 
         self.available_instructions = {
@@ -129,9 +131,9 @@ class CPU:
         print("CPU:")
 
         print("INSTRUCTIONS:")
-        for instr in self.instructions:
-            instr_name = self.available_instructions.get(instr[1], instr[1])
-            print(f"{instr_name} -> OPCODE {instr[1]} | ARGUMENT {instr[2]}")
+        for instruction in self.instructions.values():
+            instruction_name = self.available_instructions.get(instruction[0], instruction[0])
+            print(f"{instruction_name} -> OPCODE {instruction[0]} | ARGUMENT {instruction[1]}")
         print()
 
         print(f"PC -> {self.pc}")
@@ -150,16 +152,33 @@ class CPU:
         self.ULA.stack.PUSH(self.constants[index])
 
     def LOAD_FAST(self, index):
-        self.ULA.stack.PUSH(self.local_vars[index])
+        # Verifique se o índice está dentro dos limites dos locais
+        if index < len(self.local_vars):
+            value = self.local_vars[index]
+            # Se a variável for uma string representando um nome de variável, converta-a em um inteiro inicializado em 0
+            if isinstance(value, str):
+                if value.isdigit():
+                    value = int(value)
+                else:
+                    value = 0
+            self.ULA.stack.PUSH(value)
+        else:
+            print(f"INDEX ERROR: Invalid index {index} for locals.")
+            self.ULA.stack.PUSH(None)
 
     def STORE_FAST(self, index):
-        self.local_vars[index] = self.ULA.stack.POP_TOP()
+        # Verifique se o índice está dentro dos limites dos locais
+        if index < len(self.local_vars):
+            value = self.ULA.stack.POP_TOP()
+            self.local_vars[index] = value
+        else:
+            print(f"INDEX ERROR: Invalid index {index} for locals.")
 
     def DELETE_FAST(self, index):
         del self.local_vars[index]
 
     def JUMP_FORWARD(self, offset):
-        self.pc += offset
+        self.pc += offset + 1
 
     def JUMP_BACKWARD(self, offset):
         self.pc -= offset
@@ -240,10 +259,14 @@ class CPU:
     def POP_JUMP_IF_TRUE(self, offset):
         if self.ULA.stack.POP_TOP():
             self.JUMP_FORWARD(offset)
+        else:
+            self.JUMP_FORWARD(3)
 
     def POP_JUMP_IF_FALSE(self, offset):
         if not self.ULA.stack.POP_TOP():
             self.JUMP_FORWARD(offset)
+        else:
+            self.JUMP_FORWARD(3)
 
     def POP_JUMP_IF_NOT_NONE(self, offset):
         if self.ULA.stack.POP_TOP() is not None:
@@ -283,45 +306,35 @@ class CPU:
 
         # Verificar se é uma função embutida, função do numpy ou convolve
         if callable(function):
-            try:
-                # Imprimir os argumentos antes de chamar a função
-                print(f"Chamando função {function.__name__} com argumentos: {args}")
-                # Verificar os tipos e formas dos argumentos
-                if function.__name__ == 'convolve':
-                    input_array, kernel = args
-                    # Ajustar as dimensões do kernel para que sejam compatíveis com input_array
-                    input_array = np.asarray(input_array)
-                    kernel = np.asarray(kernel)
+            # Imprimir os argumentos antes de chamar a função
+            print(f"Chamando função {function.__name__} com argumentos: {args}")
 
-                    if input_array.ndim != kernel.ndim:
-                        if kernel.ndim < input_array.ndim:
-                            kernel = kernel.reshape((1,) * (input_array.ndim - kernel.ndim) + kernel.shape)
-                        elif input_array.ndim < kernel.ndim:
-                            input_array = input_array.reshape(
-                                (1,) * (kernel.ndim - input_array.ndim) + input_array.shape)
+            # Verificar os tipos e formas dos argumentos
+            if function.__name__ == 'convolve':
+                input_array, kernel = args
+                input_array = np.asarray(input_array)
+                kernel = np.asarray(kernel)
 
-                    # Print de debug para verificar as formas
-                    print(f"Forma do input_array após ajuste: {input_array.shape}")
-                    print(f"Forma do kernel: {kernel.shape}")
+                # Ajustar as dimensões do kernel para que sejam compatíveis com input_array
+                if input_array.ndim != kernel.ndim:
+                    if kernel.ndim < input_array.ndim:
+                        kernel = kernel.reshape((1,) * (input_array.ndim - kernel.ndim) + kernel.shape)
+                    elif input_array.ndim < kernel.ndim:
+                        input_array = input_array.reshape((1,) * (kernel.ndim - input_array.ndim) + input_array.shape)
 
-                    if kernel.ndim != input_array.ndim:
-                        raise ValueError("Kernel deve ser um array da mesma dimensionalidade que o input_array")
+                # Verificação final das dimensões após ajuste
+                print(f"Forma do input_array após ajuste: {input_array.shape}")
+                print(f"Forma do kernel: {kernel.shape}")
 
-                    # Imprimir as formas finais antes da convolução
-                    print(f"Forma final do input_array: {input_array.shape}")
-                    print(f"Forma final do kernel: {kernel.shape}")
+                if kernel.ndim != input_array.ndim:
+                    raise ValueError("Kernel deve ser um array da mesma dimensionalidade que o input_array")
 
-                result = function(*args)
-                print(f"Resultado da função: {result}")
-            except TypeError as e:
-                print(f"Erro ao chamar a função: {e}")
-                result = None
-            except RuntimeError as e:
-                print(f"Erro de execução ao chamar a função: {e}")
-                result = None
-            except ValueError as e:
-                print(f"Erro de valor ao chamar a função: {e}")
-                result = None
+                # Imprimir as formas finais antes da convolução
+                print(f"Forma final do input_array: {input_array.shape}")
+                print(f"Forma final do kernel: {kernel.shape}")
+
+            result = function(*args)
+            print(f"Resultado da função: {result}")
         else:
             raise TypeError(f"Objeto {function} não é chamável.")
 
@@ -333,10 +346,10 @@ class CPU:
         if isinstance(iterator, Iterator):       # Verifica se iterator é um iterador
             try:
                 item = next(iterator)
-                self.ULA.stack.PUSH(iterator)  # Coloca o iterador de volta na pilha
                 self.ULA.stack.PUSH(item)
+                self.ULA.stack.PUSH(iterator)
             except StopIteration:
-                self.pc = jump_offset+1
+                self.pc += jump_offset + 1
         else:
             raise TypeError("Objeto não é um iterador")
 
@@ -346,10 +359,10 @@ class CPU:
         while not process.pc > len(process.instructions) and time_start + quantum > time.time():
             print("-" * 50)
             print()
-            instruction = process.instructions[self.pc // 2]
-            opcode = instruction[1]
-            argument = instruction[2]
-            argument_val = instruction[3]
+            instruction = process.instructions[f"{self.pc}"]
+            opcode = instruction[0]
+            argument = instruction[1]
+            argument_val = instruction[2]
 
             if opcode in self.redirect:
                 function, has_argument = self.redirect[opcode]
@@ -386,5 +399,18 @@ class CPU:
                 print("STACK:")
                 self.ULA.stack.SHOW_STACK()
             print("-" * 50)
-            self.pc += 2
+            if opcode not in [93, 107, 106, 116, 171, 25, 122, 150, 115, 140, 60]:
+                self.pc += 2
+            elif opcode in [93, 115]:  # FOR_ITER
+                continue
+            elif opcode == 171:
+                self.pc += 8
+            elif opcode == 116:
+                self.pc += 10
+            elif opcode == 106:
+                self.pc += 20
+            elif opcode == 140:  # JUMP_BACKWARD
+                pass
+            else:
+                self.pc += 4
             process.pc = self.pc

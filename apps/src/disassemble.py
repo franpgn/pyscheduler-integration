@@ -44,9 +44,9 @@ def disassemble(code):
     # Extrair instruções
     instructions = list(dis.get_instructions(code))
     processed = False
-    reduced_instructions = [(instruction.offset, instruction.opcode, instruction.arg, instruction.argval, processed) for instruction in instructions]
+    reduced_instructions = {instruction.offset: [instruction.opcode, instruction.arg, instruction.argval, processed] for instruction in instructions}
 
-    #print(instructions)
+    print(dis.dis(code))
 
     Memory.__init__()
     Memory.add_process({
@@ -57,9 +57,7 @@ def disassemble(code):
         "constants": constant_values,
         "locals_var": variable_values,
         "instructions": reduced_instructions,
-        "pc_total": reduced_instructions[-1][0]
-    }
-    )
+        "pc_total": list(reduced_instructions.keys())[-1]
+    })
     json_data = Memory.get_process_queue()
     print(f'Novo processo na memoria: {json_data[-1]['id']}')
-
