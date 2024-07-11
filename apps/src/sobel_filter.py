@@ -32,38 +32,37 @@ def sobel_filter():
     G = G / G.max() * 255
     return G
 
-def load_execution_log():
-    disassemble(sobel_filter.__code__)
 
-    # Test
-    image = np.array([[10, 10, 10, 10, 10],
-                      [10, 50, 50, 50, 10],
-                      [10, 50, 100, 50, 10],
-                      [10, 50, 50, 50, 10],
-                      [10, 10, 10, 10, 10]])
-    filtered_image = sobel_filter()
-    print(filtered_image)
-    # View
-    plt.figure(figsize=(10, 5))
+disassemble(sobel_filter.__code__)
 
-    plt.subplot(1, 2, 1)
-    plt.title('Original')
-    plt.imshow(image, cmap='gray')
-    plt.axis('off')
-    plt.subplot(1, 2, 1)
-    plt.title('Original')
-    plt.imshow(image, cmap='gray')
-    plt.axis('off')
+# Test
+image = np.array([[10, 10, 10, 10, 10],
+                  [10, 50, 50, 50, 10],
+                  [10, 50, 100, 50, 10],
+                  [10, 50, 50, 50, 10],
+                  [10, 10, 10, 10, 10]])
+filtered_image = sobel_filter()
+print(filtered_image)
+# View
+plt.figure(figsize=(10, 5))
 
-    plt.subplot(1, 2, 2)
-    plt.title('Sobel Filter')
-    plt.imshow(filtered_image, cmap='gray')
-    plt.axis('off')
-    plt.subplot(1, 2, 2)
-    plt.title('Sobel Filter')
-    plt.imshow(filtered_image, cmap='gray')
-    plt.axis('off')
+plt.subplot(1, 2, 1)
+plt.title('Original')
+plt.imshow(image, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 2, 1)
+plt.title('Original')
+plt.imshow(image, cmap='gray')
+plt.axis('off')
 
-    plt.show()
-    plt.show()
+plt.subplot(1, 2, 2)
+plt.title('Sobel Filter')
+plt.imshow(filtered_image, cmap='gray')
+plt.axis('off')
+plt.subplot(1, 2, 2)
+plt.title('Sobel Filter')
+plt.imshow(filtered_image, cmap='gray')
+plt.axis('off')
 
+plt.show()
+plt.show()
