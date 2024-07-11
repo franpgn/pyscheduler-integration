@@ -2,6 +2,8 @@ import dis
 import re
 import sys
 import os
+from random import randint
+
 from simulator.src.memory import Memory
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -29,7 +31,6 @@ def disassemble(code):
     else:
         variable_values = []
 
-    # Extrair nomes
     names = re.search(r"Names:\s*(.*?)(?=\n[A-Z]|\Z)", infos, re.DOTALL)
     if names:
         name_lines = names.group(1).strip().split("\n")
@@ -37,22 +38,22 @@ def disassemble(code):
     else:
         name_values = []
 
-    # Extrair tamanho da pilha
     stack_size_match = re.search(r"Stack size:\s*(\d+)", infos)
     stack_size = int(stack_size_match.group(1)) if stack_size_match else 0
 
-    # Extrair instruções
     instructions = list(dis.get_instructions(code))
     processed = False
     reduced_instructions = {instruction.offset: [instruction.opcode, instruction.arg, instruction.argval, processed] for instruction in instructions}
 
+    burst_time = randint(5, 15)
+    priority = randint(1, 3)
     print(dis.dis(code))
 
     Memory.__init__()
     Memory.add_process({
         "pid": Memory.get_last_id(),
-        "burst_time": 0,
-        "priority": 1,
+        "burst_time": burst_time,
+        "priority": priority,
         "stack_size": int(stack_size),
         "constants": constant_values,
         "local_vars": variable_values,
