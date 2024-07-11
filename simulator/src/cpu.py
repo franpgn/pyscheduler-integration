@@ -13,12 +13,10 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
-# Adicionar funções embutidas aqui
 builtin_functions = {
     'len': len,
     'range': range,
-    'print': print,  # Adiciona a função print aqui
-    # Adicione mais funções embutidas conforme necessário
+    'print': print,
 }
 
 
@@ -152,10 +150,8 @@ class CPU:
         self.ULA.stack.PUSH(self.constants[index])
 
     def LOAD_FAST(self, index):
-        # Verifique se o índice está dentro dos limites dos locais
         if index < len(self.local_vars):
             value = self.local_vars[index]
-            # Se a variável for uma string representando um nome de variável, converta-a em um inteiro inicializado em 0
             if isinstance(value, str):
                 if value.isdigit():
                     value = int(value)
@@ -167,7 +163,6 @@ class CPU:
             self.ULA.stack.PUSH(None)
 
     def STORE_FAST(self, index):
-        # Verifique se o índice está dentro dos limites dos locais
         if index < len(self.local_vars):
             value = self.ULA.stack.POP_TOP()
             self.local_vars[index] = value
@@ -210,20 +205,20 @@ class CPU:
 
         print(f"Tentando acessar o atributo '{attr_name}' do objeto: {obj}")
 
-        if namei & 1:  # Se o bit mais baixo estiver definido
+        if namei & 1:
             method = getattr(obj, attr_name, None)
             if method is not None and callable(method):
-                self.ULA.stack.PUSH(obj)  # Empurrar self
-                self.ULA.stack.PUSH(method)  # Empurrar o método não vinculado
+                self.ULA.stack.PUSH(obj)
+                self.ULA.stack.PUSH(method)
             else:
-                self.ULA.stack.PUSH(None)  # Empurrar NULL
-                self.ULA.stack.PUSH(method)  # Empurrar o objeto retornado pela busca de atributo
+                self.ULA.stack.PUSH(None)
+                self.ULA.stack.PUSH(method)
         else:
             try:
                 self.ULA.stack.PUSH(getattr(obj, attr_name))
             except AttributeError as e:
                 print(f"Erro ao acessar atributo: {e}")
-                self.ULA.stack.PUSH(None)  # Empurrar um valor padrão em caso de erro
+                self.ULA.stack.PUSH(None)
 
     def LIST_EXTEND(self, count):
         items = [self.ULA.stack.POP_TOP() for _ in range(count)]
@@ -297,39 +292,30 @@ class CPU:
         self.ULA.stack.PUSH(items)
 
     def CALL(self, arg_count):
-        # Recuperar os argumentos da pilha
         args = [self.ULA.stack.POP_TOP() for _ in range(arg_count)]
-        args.reverse()  # Reverter para a ordem correta
-
-        # Recuperar a função da pilha
+        args.reverse()
         function = self.ULA.stack.POP_TOP()
 
-        # Verificar se é uma função embutida, função do numpy ou convolve
         if callable(function):
-            # Imprimir os argumentos antes de chamar a função
             print(f"Chamando função {function.__name__} com argumentos: {args}")
 
-            # Verificar os tipos e formas dos argumentos
             if function.__name__ == 'convolve':
                 input_array, kernel = args
                 input_array = np.asarray(input_array)
                 kernel = np.asarray(kernel)
 
-                # Ajustar as dimensões do kernel para que sejam compatíveis com input_array
                 if input_array.ndim != kernel.ndim:
                     if kernel.ndim < input_array.ndim:
                         kernel = kernel.reshape((1,) * (input_array.ndim - kernel.ndim) + kernel.shape)
                     elif input_array.ndim < kernel.ndim:
                         input_array = input_array.reshape((1,) * (kernel.ndim - input_array.ndim) + input_array.shape)
 
-                # Verificação final das dimensões após ajuste
                 print(f"Forma do input_array após ajuste: {input_array.shape}")
                 print(f"Forma do kernel: {kernel.shape}")
 
                 if kernel.ndim != input_array.ndim:
                     raise ValueError("Kernel deve ser um array da mesma dimensionalidade que o input_array")
 
-                # Imprimir as formas finais antes da convolução
                 print(f"Forma final do input_array: {input_array.shape}")
                 print(f"Forma final do kernel: {kernel.shape}")
 
@@ -338,12 +324,11 @@ class CPU:
         else:
             raise TypeError(f"Objeto {function} não é chamável.")
 
-        # Colocar o resultado de volta na pilha
         self.ULA.stack.PUSH(result)
 
     def FOR_ITER(self, jump_offset):
         iterator = self.ULA.stack.POP_TOP()
-        if isinstance(iterator, Iterator):       # Verifica se iterator é um iterador
+        if isinstance(iterator, Iterator):
             try:
                 item = next(iterator)
                 self.ULA.stack.PUSH(item)
