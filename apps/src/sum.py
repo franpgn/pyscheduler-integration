@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(script_dir, '..', '..'))
 sys.path.append(project_root)
 
 
-def my_function():
+def sum():
     a = 1
     b = 2
     c = 3
@@ -16,7 +16,7 @@ def my_function():
     f = 6
     g = 7
     h = a + b + c + d + e + f + g
-    return c
+    return h
 
 
-disassemble(my_function)
+disassemble(sum)

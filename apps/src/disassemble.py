@@ -55,9 +55,10 @@ def disassemble(code):
         "priority": 1,
         "stack_size": int(stack_size),
         "constants": constant_values,
-        "locals_var": variable_values,
+        "local_vars": variable_values,
         "instructions": reduced_instructions,
+        "names": name_values,
         "pc_total": list(reduced_instructions.keys())[-1]
     })
     json_data = Memory.get_process_queue()
-    print(f'Novo processo na memoria: {json_data[-1]['id']}')
+    print(f'Novo processo na memoria: {json_data[-1]['pid']}')

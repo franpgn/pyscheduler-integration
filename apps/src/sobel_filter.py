@@ -32,7 +32,7 @@ def sobel_filter():
     G = G / G.max() * 255
     return G
 
-if __name__ == "__main__":
+def load_execution_log():
     disassemble(sobel_filter.__code__)
 
     # Test

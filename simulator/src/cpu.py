@@ -356,7 +356,7 @@ class CPU:
     def RUN(self, process: Process, quantum):
         time_start = time.time()
         quantum /= 1000
-        while not process.pc > len(process.instructions) and time_start + quantum > time.time():
+        while not process.pc >= process.total_pc:
             print("-" * 50)
             print()
             instruction = process.instructions[f"{self.pc}"]
