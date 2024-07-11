@@ -92,8 +92,14 @@ class ULA:
         rhs = self.stack.POP_TOP()
         lhs = self.stack.POP_TOP()
 
+        if isinstance(lhs, str) and lhs.isdigit():
+            lhs = int(lhs)
+        if isinstance(rhs, str) and rhs.isdigit():
+            rhs = int(rhs)
+
         result = self.available_bin_operators[operator](lhs, rhs)
         self.stack.PUSH(result)
+
 
     def BINARY_SUBSCR(self):
         if self.stack.top < 1:
